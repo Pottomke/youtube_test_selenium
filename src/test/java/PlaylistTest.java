@@ -1,3 +1,4 @@
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
@@ -11,6 +12,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 public class PlaylistTest {
 
@@ -18,33 +20,26 @@ public class PlaylistTest {
 
     @BeforeEach
     public void Setup(){
-        //le kell tölteni a ChromeDrivert is a saját chrome-hoz
-        //érdemes mindig betenni a chrome drivert a projectbe
-        System.setProperty("webdriver.chrome.driver","chromedriver.exe");
 
-        //WebDriverManager.chromedriver().setup();
-        // configure options parameter to Chrome driver
-        ChromeOptions o= new ChromeOptions();
-        // add Incognito parameter
-        o.addArguments("--incognito");
-        //o.addArguments("--window-size=1920,1080");
-        o.addArguments("--start-maximized");
-        // add no UI parameter
-        //o.addArguments("--headless");
-        //window size
-        //o.addArguments("--window-size=1920,1080");
-        // para javasciptek letiltása
-        o.addArguments("--no-sandbox");
-        // DesiredCapabilities object
-        DesiredCapabilities c = new DesiredCapabilities();
-        //set capability to browser
-        c.setCapability(ChromeOptions.CAPABILITY, o);
-        driver = new ChromeDriver(o);
+        WebDriverManager.chromedriver().setup();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--no-sandbox");
+        options.addArguments("--incognito");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--disable-notifications");
+        options.addArguments("--disable-extensions");
+        options.addArguments("--headless");
+        options.addArguments("--window-size=1920,1080");
+        options.addArguments("start-maximized");
+        driver = new ChromeDriver(options);
+        driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+        driver.manage().window().maximize();
+
 
         driver.get("https://www.youtube.com/");
 
         //várakoztatás
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
         WebElement agree= driver.findElement(By.xpath("//*[@aria-label='Reject the use of cookies and other data for the purposes described']"));
         agree.click();
@@ -52,7 +47,7 @@ public class PlaylistTest {
 
     @Test
     public void SearchBoxTest(){
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         WebElement searchBox = driver.findElement(By.xpath("//input[@id=\"search\"]"));
 
         Actions action = new Actions(driver);

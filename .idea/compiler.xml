@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="youtube_test_selenium" />
         <module name="test_youtube_with_selenium" />
       </profile>
     </annotationProcessing>
